@@ -4,7 +4,10 @@
   "description": "Automated software testing with Playwright",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tests:chrome": "playwright test --config=playwright.config.ts --project=chromium",
+    "tests:firefox": "playwright test --config=playwright.config.ts --project=firefox",
+    "tests:webkit": "playwright test --config=playwright.config.ts --project=webkit",
+    "tests:all": "playwright test --config=playwright.config.ts"
   },
   "repository": {
     "type": "git",
@@ -17,7 +20,7 @@
   },
   "homepage": "https://github.com/synapdb/udemy-playwright#readme",
   "dependencies": {
-    "@playwright/test": "^1.64.0",
+    "@playwright/test": "1.61.1",
     "prettier": "^3.9.10"
   }
 }

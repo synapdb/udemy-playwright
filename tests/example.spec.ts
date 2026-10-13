@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { loadHomepage, assertTitle } from '../helpers';
 
 test('Simple basic test @basictag', async ({ page }) => {
     await page.goto('https://playwright.dev');
@@ -90,16 +91,30 @@ test.describe('A test suite for learning the basic of Playwright', () => {
     })
 })
 
-test('Screenshots', async ({ page }) => {
-    // 1. Load website
-    await page.goto('https://example-replica.netlify.app/')
-    // 2. Take a screeshot of full page.
-    await page.screenshot({ path: 'screenshot.png', fullPage: true })
+test.describe('Hooks', () => {
+    test('Screenshots', async ({ page }) => {
+        // 1. Load website
+        //await page.goto('https://example-replica.netlify.app/')
+        // 2. Take a screeshot of full page.
+        await page.screenshot({ path: 'screenshot.png', fullPage: true })
+    })
 
-    // 3. Take a screeshot of a specific element.
-    const element = page.locator('h1')
-    await element.screenshot({ path: 'screenshot-element.png' })
+    test('Screenshots of specific elements', async ({ page }) => {
+        // 1. Load website
+        //await page.goto('https://example-replica.netlify.app/')
+        // 2. Take a screeshot of a specific element.
+        const element = page.locator('h1')
+        await element.screenshot({ path: 'screenshot-element.png' })
+    })
 
-    // 4 Take a screeshot of a specific area of the page.
-    await page.screenshot({ path: 'screenshot-area.png', fullPage: false })
+    test.beforeEach(async ({ page }) => {
+        // 1. Load website
+        await page.goto('https://example-replica.netlify.app/')
+    })
+})
+
+test('Custom Helper Functions', async ({ page }) => {
+    await loadHomepage(page)
+    //await page.pause()
+    await assertTitle(page)
 })
