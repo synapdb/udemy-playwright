@@ -91,7 +91,7 @@ test.describe('A test suite for learning the basic of Playwright', () => {
     })
 })
 
-test.describe('Hooks', () => {
+test.describe.parallel('Hooks', () => {
     test('Screenshots', async ({ page }) => {
         // 1. Load website
         //await page.goto('https://example-replica.netlify.app/')
