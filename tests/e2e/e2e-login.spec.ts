@@ -1,46 +1,47 @@
 import { test, expect } from '@playwright/test'
 import { skipAcceptCertsRedirect } from '../../helpers'
+import { HomePage } from '../../page-objects/HomePage'
+import { LoginPage } from '../../page-objects/LoginPage'
+import { baseUrl } from '../../fixtures/urls'
+import { invalidUser, validUser } from '../../fixtures/users'
 
 test.describe.parallel('Login / Logout flow', () => {
+    let homePage: HomePage
+    let loginPage: LoginPage
+
     // Before Hook
     test.beforeEach(async ({ page }) => {
+        homePage = new HomePage(page)
+        loginPage = new LoginPage(page)
         await skipAcceptCertsRedirect(page)
-        await page.goto('http://zero.webappsecurity.com/')
+        await homePage.visit()
     })
 
     //Negative Scenario
-    test('Negative scenario for login', async ({ page }) => {
+    test('Negative scenario for login', async () => {
         // Given
-        await page.click('#signin_button')
-        await page.fill('#user_login', 'invalid username')
-        await page.fill('#user_password', 'invalid password')
+        await homePage.clickOnSignIn()
 
         // When
-        await page.click('input[type="submit"]')
+        await loginPage.login(invalidUser)
 
         // Then
-        const errorMessage = page.locator('.alert-error')
-        await expect(errorMessage).toHaveText('Login and/or password are wrong.')
+        await loginPage.assertLoginFailed()
     })
 
     //Positive Scenario
     test('Positive scenario for login + logout flow', async ({ page }) => {
         // Given
-        await page.click('#signin_button')
-        await page.fill('#user_login', 'username')
-        await page.fill('#user_password', 'password')
+        await homePage.clickOnSignIn()
 
         // When
-        await page.click('input[type="submit"]')
+        await loginPage.login(validUser)
 
         // Then
-        await expect(page).toHaveURL('http://zero.webappsecurity.com/bank/account-summary.html')
-        const accountSymmaryTab = await page.locator('#account_summary_tab')
-        await expect(accountSymmaryTab).toBeVisible()
+        await expect(page).toHaveURL(`${baseUrl}/bank/account-summary.html`)
+        await expect(page.locator('#account_summary_tab')).toBeVisible()
 
-        await page.goto('http://zero.webappsecurity.com/logout.html')
-        await expect(page).toHaveURL('http://zero.webappsecurity.com/index.html')
-        const signinButton = await page.locator('#signin_button')
-        await expect(signinButton).toBeVisible()
+        await loginPage.logout()
+        await homePage.assertLoggedOut()
     })
 })
