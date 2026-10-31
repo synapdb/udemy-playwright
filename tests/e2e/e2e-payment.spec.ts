@@ -1,16 +1,28 @@
 import { test, expect } from '@playwright/test'
 import { skipAcceptCertsRedirect } from '../../helpers'
+import { validUser } from '../../fixtures/users'
+import { HomePage } from '../../page-objects/HomePage'
+import { LoginPage } from '../../page-objects/LoginPage'
+import { PaymentPage } from '../../page-objects/PaymentPage'
+import { Navbar } from '../../page-objects/components/Navbar'
 
 test.describe.parallel('New Payment', () => {
+    let homePage: HomePage
+    let loginPage: LoginPage
+    let paymentPage: PaymentPage
+    let navbar: Navbar
 
     test.beforeEach(async ({ page }) => {
+        homePage = new HomePage(page)
+        loginPage = new LoginPage(page)
+        paymentPage = new PaymentPage(page)
+        navbar = new Navbar(page)
+
         await skipAcceptCertsRedirect(page)
 
-        await page.goto('http://zero.webappsecurity.com/index.html')
-        await page.click('#signin_button')
-        await page.fill('#user_login', 'username')
-        await page.fill('#user_password', 'password')
-        await page.click('input[type="submit"]')
+        await homePage.visit()
+        await homePage.clickOnSignIn()
+        await loginPage.login(validUser)
     })
 
     test('Should get payee details', async ({ page }) => {
@@ -26,21 +38,11 @@ test.describe.parallel('New Payment', () => {
     })
 
     test('Should sent new payment', async ({ page }) => {
-        // Given
-        await page.click('#pay_bills_tab')
-        await page.selectOption('#sp_payee', 'apple')
-        await page.selectOption('#sp_account', '6')
-        await page.fill('#sp_amount', '5000')
-        await page.fill('#sp_date', '2026-10-19')
-        await page.fill('#sp_description', 'Payment for apple')
-
-        // When
-        await page.click('#pay_saved_payees')
+        // Given + When
+        await navbar.clickOnTab('Pay Bills')
+        await paymentPage.createPayment()
 
         // Then
-        const message = "The payment was successfully submitted."
-        const messageAlert = await page.locator('#alert_content > span')
-        await expect(messageAlert).toBeVisible()
-        await expect(messageAlert).toHaveText(message)
+        await paymentPage.assertSuccessMessage()
     })
 })

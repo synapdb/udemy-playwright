@@ -1,15 +1,21 @@
 import { test, expect } from '@playwright/test'
 import { skipAcceptCertsRedirect } from '../../helpers'
+import { LoginPage } from '../../page-objects/LoginPage'
+import { HomePage } from '../../page-objects/HomePage'
 
 test.describe('Tranfer funds and make payments flow', () => {
+    let loginPage: LoginPage
+    let homePage: HomePage
+
     test.beforeEach(async ({ page }) => {
+        homePage = new HomePage(page)
+        loginPage = new LoginPage(page)
+
         await skipAcceptCertsRedirect(page)
 
-        await page.goto('http://zero.webappsecurity.com/index.html')
-        await page.click('#signin_button')
-        await page.fill('#user_login', 'username')
-        await page.fill('#user_password', 'password')
-        await page.click('input[type="submit"]')
+        await homePage.visit()
+        await homePage.clickOnSignIn()
+        await loginPage.login({ username: 'username', password: 'password' })
     })
 
     test('Should convert currency', async ({ page }) => {

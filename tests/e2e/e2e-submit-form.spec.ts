@@ -1,43 +1,46 @@
 import { test, expect } from '@playwright/test'
+import { HomePage } from '../../page-objects/HomePage'
+import { FeedbackPage } from '../../page-objects/FeedbackPage'
 
 test.describe.parallel('Feedback Form', () => {
+    let homePage: HomePage
+    let feedbackPage: FeedbackPage
+
     test.beforeEach(async ({ page }) => {
-        await page.goto('http://zero.webappsecurity.com/index.html')
-        await page.click('#feedback')
+        homePage = new HomePage(page)
+        feedbackPage = new FeedbackPage(page)
+
+        await homePage.visit()
+        await homePage.clickOnFeedbackLink()
     })
 
     test('Reset feedback form', async ({ page }) => {
         // Given
-        await page.fill('#name', 'John Doe')
-        await page.fill('#email', 'john.doe@example.com')
-        await page.fill('#subject', 'Test Subject')
-        await page.fill('#comment', 'This is a test comment')
+        await feedbackPage.fillForm(
+            'John Doe',
+            'john.doe@example.com',
+            'Test Subject',
+            'This is a test comment')
 
         // When
-        await page.click('input[value="Clear"]')
+        await feedbackPage.resetForm()
 
         // Then
-        await expect(page).toHaveURL('http://zero.webappsecurity.com/feedback.html')
-        await expect(page.locator('#name')).toBeEmpty()
-        await expect(page.locator('#email')).toBeEmpty()
-        await expect(page.locator('#subject')).toBeEmpty()
-        await expect(page.locator('#comment')).toBeEmpty()
-
+        await feedbackPage.assertFormReset()
     })
 
     test('Submit feedback form', async ({ page }) => {
         // Given
-        await page.fill('#name', 'John Doe')
-        await page.fill('#email', 'john.doe@example.com')
-        await page.fill('#subject', 'Test Subject')
-        await page.fill('#comment', 'This is a test comment')
+        await feedbackPage.fillForm(
+            'John Doe',
+            'john.doe@example.com',
+            'Test Subject',
+            'This is a test comment')
 
         // When
-        await page.click('input[type="submit"]')
+        await feedbackPage.submitForm()
 
         // Then
-        await page.waitForSelector('#feedback-title')
-        // const feedbackHeading = await page.getByRole('heading', { name: 'Feedback' })
-        // await expect(feedbackHeading).toBeVisible()
+        await feedbackPage.feedBackForSent()
     })
 })
