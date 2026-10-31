@@ -25,6 +25,17 @@ export class PaymentPage {
         this.message = page.locator('#alert_content > span')
     }
 
+    /** Picks a payee from the list and clicks "Get Payee Details". */
+    async viewPayeeDetails(payee: string) {
+        await this.payeeSelectBox.selectOption(payee)
+        await this.payeeDetailsButton.click()
+    }
+
+    /** Asserts the payee details panel is shown after requesting the details. */
+    async assertPayeeDetailsVisible() {
+        await expect(this.payeeDetail).toBeVisible()
+    }
+
     async createPayment() {
         // Given
         await this.payeeSelectBox.selectOption('apple')

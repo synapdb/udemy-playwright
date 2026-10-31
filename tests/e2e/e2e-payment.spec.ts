@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@playwright/test'
 import { skipAcceptCertsRedirect } from '../../helpers'
 import { validUser } from '../../fixtures/users'
 import { HomePage } from '../../page-objects/HomePage'
@@ -25,16 +25,15 @@ test.describe.parallel('New Payment', () => {
         await loginPage.login(validUser)
     })
 
-    test('Should get payee details', async ({ page }) => {
+    test('Should get payee details', async () => {
         // Given
-        await page.click('#pay_bills_tab')
-        await page.selectOption('#sp_payee', 'apple')
+        await navbar.clickOnTab('Pay Bills')
 
         // When
-        await page.click('#sp_get_payee_details')
+        await paymentPage.viewPayeeDetails('apple')
 
         // Then
-        await page.waitForSelector('#sp_payee_details')
+        await paymentPage.assertPayeeDetailsVisible()
     })
 
     test('Should sent new payment', async ({ page }) => {
