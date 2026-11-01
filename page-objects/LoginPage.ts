@@ -1,9 +1,10 @@
 import { expect, Locator, Page } from '@playwright/test'
 import { baseUrl } from '../fixtures/urls'
 import { User } from '../fixtures/users'
+import { AbstractPage } from './AbstractPage'
 
-export class LoginPage {
-    readonly page: Page
+export class LoginPage extends AbstractPage {
+    //readonly page: Page
 
     // Locators are defined once here, so a selector change is a one-line fix.
     readonly usernameInput: Locator
@@ -13,7 +14,8 @@ export class LoginPage {
 
     // Constructor: Inbit selectors from the page
     constructor(page: Page) {
-        this.page = page
+        //this.page = page
+        super(page);
         this.usernameInput = page.locator('#user_login')
         this.passwordInput = page.locator('#user_password')
         this.submitButton = page.locator('input[type="submit"]')

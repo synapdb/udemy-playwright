@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from '@playwright/test'
-import { baseUrl } from '../fixtures/urls'
 
 export class FeedbackPage {
     readonly page: Page

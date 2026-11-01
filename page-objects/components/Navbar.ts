@@ -1,4 +1,4 @@
-import { Expect, Locator, Page } from '@playwright/test'
+import { Locator, Page } from '@playwright/test'
 
 export class Navbar {
     readonly page: Page
@@ -18,6 +18,7 @@ export class Navbar {
         this.myMoneyApp = page.locator('#my_money_app_tab')
         this.onlineStatements = page.locator('#online_statements_tab')
     }
+
     async clickOnTab(tabName: string) {
         switch (tabName) {
             case 'Account Summary':

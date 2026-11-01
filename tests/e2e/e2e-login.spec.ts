@@ -24,6 +24,7 @@ test.describe.parallel('Login / Logout flow', () => {
 
         // When
         await loginPage.login(invalidUser)
+        await loginPage.wait(300)
 
         // Then
         await loginPage.assertLoginFailed()
