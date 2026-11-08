@@ -20,7 +20,7 @@
     "tests:api": "playwright test --config=api.config.ts --project=chromium",
     "tests:api:firefox": "playwright test --config=api.config.ts --project=firefox",
     "tests:api:webkit": "playwright test --config=api.config.ts --project=webkit",
-    "tests:api:all": "playwright test --config=api.config.ts",
+    "tests:api:all": "playwright test --config=api.config.ts"
   },
   "repository": {
     "type": "git",
